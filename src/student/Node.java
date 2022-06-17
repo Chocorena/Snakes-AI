@@ -57,19 +57,19 @@ public class Node{
      * @return array of neighbour coordinates
      * @author Morena
      */
-    public List<Coordinate> myNeighbours(Snake snake){
+    public List<Node> myNeighbours(Snake snake){
 
-        Coordinate up = new Coordinate(snake.getHead().x - snake.elements.size(), snake.getHead().y);
-        Coordinate down = new Coordinate(snake.getHead().x + snake.elements.size(), snake.getHead().y);
-        Coordinate left = new Coordinate(snake.getHead().x, snake.getHead().y - snake.elements.size());
-        Coordinate right = new Coordinate(snake.getHead().x, snake.getHead().y + snake.elements.size());
+        Node up = new Node(snake.getHead().x - snake.elements.size(), snake.getHead().y);
+        Node down = new Node(snake.getHead().x + snake.elements.size(), snake.getHead().y);
+        Node left = new Node(snake.getHead().x, snake.getHead().y - snake.elements.size());
+        Node right = new Node(snake.getHead().x, snake.getHead().y + snake.elements.size());
 
-        Coordinate northEast = new Coordinate(snake.getHead().x + snake.elements.size(), snake.getHead().y - snake.elements.size());
-        Coordinate northWest = new Coordinate(snake.getHead().x - snake.elements.size(), snake.getHead().y - snake.elements.size());
-        Coordinate southEast = new Coordinate(snake.getHead().x + snake.elements.size(), snake.getHead().y + snake.elements.size());
-        Coordinate southWest = new Coordinate(snake.getHead().x - snake.elements.size(), snake.getHead().y + snake.elements.size());
+        Node northEast = new Node(snake.getHead().x + snake.elements.size(), snake.getHead().y - snake.elements.size());
+        Node northWest = new Node(snake.getHead().x - snake.elements.size(), snake.getHead().y - snake.elements.size());
+        Node southEast = new Node(snake.getHead().x + snake.elements.size(), snake.getHead().y + snake.elements.size());
+        Node southWest = new Node(snake.getHead().x - snake.elements.size(), snake.getHead().y + snake.elements.size());
 
-        List<Coordinate> neighbours = new ArrayList<>();
+        List<Node> neighbours = new ArrayList<>();
         neighbours.add(up);
         neighbours.add(down);
         neighbours.add(left);
