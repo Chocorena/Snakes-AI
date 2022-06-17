@@ -6,6 +6,9 @@ import snakes.Snake;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implements nodes of a cell on the game boar
+ */
 public class Node{
     public int x, y;
     private int G =0;
@@ -81,4 +84,20 @@ public class Node{
 
         return neighbours;
     }
+
+    /**
+     * Check whether objects(here nodes) are equal
+     *
+     * @param o an object that should be compared
+     * @return True - if equal
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return x == node.x &&
+                y == node.y;
+    }
+
 }
