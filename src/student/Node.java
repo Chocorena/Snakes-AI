@@ -62,15 +62,15 @@ public class Node{
      */
     public List<Node> myNeighbours(Snake snake){
 
-        Node up = new Node(snake.getHead().x - snake.elements.size(), snake.getHead().y);
-        Node down = new Node(snake.getHead().x + snake.elements.size(), snake.getHead().y);
-        Node left = new Node(snake.getHead().x, snake.getHead().y - snake.elements.size());
-        Node right = new Node(snake.getHead().x, snake.getHead().y + snake.elements.size());
+        Node up = new Node(snake.getHead().x - 1, snake.getHead().y);
+        Node down = new Node(snake.getHead().x + 1, snake.getHead().y);
+        Node left = new Node(snake.getHead().x, snake.getHead().y - 1);
+        Node right = new Node(snake.getHead().x, snake.getHead().y + 1);
 
-        Node northEast = new Node(snake.getHead().x + snake.elements.size(), snake.getHead().y - snake.elements.size());
-        Node northWest = new Node(snake.getHead().x - snake.elements.size(), snake.getHead().y - snake.elements.size());
-        Node southEast = new Node(snake.getHead().x + snake.elements.size(), snake.getHead().y + snake.elements.size());
-        Node southWest = new Node(snake.getHead().x - snake.elements.size(), snake.getHead().y + snake.elements.size());
+        Node northEast = new Node(snake.getHead().x + 1, snake.getHead().y - 1);
+        Node northWest = new Node(snake.getHead().x - 1, snake.getHead().y - 1);
+        Node southEast = new Node(snake.getHead().x + 1, snake.getHead().y + 1);
+        Node southWest = new Node(snake.getHead().x - 1, snake.getHead().y + 1);
 
         List<Node> neighbours = new ArrayList<>();
         neighbours.add(up);
