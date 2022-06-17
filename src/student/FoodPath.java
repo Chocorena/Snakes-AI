@@ -12,8 +12,8 @@ public class FoodPath {
         return currentFood;
     }
 
-    public void setCurrentFood(Node curretnFood) {
-        this.currentFood = curretnFood;
+    public void setCurrentFood(Node currentFood) {
+        this.currentFood = currentFood;
     }
 
     public LinkedList<Node> getPathToCurrentFood() {
