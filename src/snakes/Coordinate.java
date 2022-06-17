@@ -9,34 +9,10 @@ import java.util.Objects;
  */
 public class Coordinate implements Comparable<Coordinate> {
     public final int x, y;
-    private int G =0;
-    private int H =0;
-    private Coordinate father;
 
     public Coordinate(int x, int y) {
         this.x = x;
         this.y = y;
-    }
-    public int getF(){
-        return G+H;
-    }
-    public int getG(){
-        return G;
-    }
-    public void setG(int g){
-        G = g;
-    }
-    public int getH(){
-        return H;
-    }
-    public void setH(int h){
-        H =h;
-    }
-    public Coordinate getFather(){
-        return father;
-    }
-    public void setFather(Coordinate father){
-        this.father = father;
     }
 
 
