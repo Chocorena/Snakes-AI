@@ -38,9 +38,16 @@ public class MyBot implements Bot {
                 .sorted()
                 .toArray(Direction[]::new);
 
+        if(foodController.getPathToCurrentFood()==null) {
 
-        LinkedList<Node> list = aStarAlgorithm((Node) snake.getHead(), (Node)apple, mazeSize, snake);
-        foodController.setPathToCurrentFood(list);
+
+            Node n = (Node) apple;
+
+            LinkedList<Node> list = aStarAlgorithm((Node) snake.getHead(), (Node) apple, mazeSize, snake);
+            foodController.setPathToCurrentFood(list);
+
+        }
+
 
 
         return notLosing[0];
@@ -135,7 +142,6 @@ public class MyBot implements Bot {
      */
     public boolean shouldProcess(Node n, Coordinate mazeSize, Snake snake){
         //if node is out of screen MAX
-        SnakesUIMain test = new SnakesUIMain();
 
         if(n.getX()>(mazeSize.x-1) ||
                 n.getY()>(mazeSize.y-1)) {
@@ -151,4 +157,4 @@ public class MyBot implements Bot {
         return shouldProceed;
 
     }
-}}
+}
