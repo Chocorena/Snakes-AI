@@ -9,6 +9,8 @@ public class MyBot implements Bot {
 
     private static final Direction[] DIRECTIONS = new Direction[]{Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
     SnakeCanvas canvas;
+    public final FoodPath foodController = new FoodPath();
+
 
     @Override
     public Direction chooseDirection(Snake snake, Snake opponent, Coordinate mazeSize, Coordinate apple) {
@@ -35,6 +37,12 @@ public class MyBot implements Bot {
                 .filter(d -> !snake.elements.contains(head.moveTo(d)))
                 .sorted()
                 .toArray(Direction[]::new);
+
+
+        LinkedList<Node> list = aStarAlgorithm((Node) snake.getHead(), (Node)apple, mazeSize, snake);
+        foodController.setPathToCurrentFood(list);
+
+
         return notLosing[0];
     }
 
@@ -45,7 +53,7 @@ public class MyBot implements Bot {
         return abstandY + abstandX;
     }
 
-    private LinkedList<Node> aStarAlgorithm(Node start, Node foodDestination){
+    private LinkedList<Node> aStarAlgorithm(Node start, Node foodDestination, Coordinate mazeSize, Snake snake){
         PriorityQueue<Node> openQueue = new PriorityQueue<Node>();
 
         LinkedList<Node> listClosed = new LinkedList<Node>();
@@ -69,7 +77,7 @@ public class MyBot implements Bot {
             }
 
             //find all neighbors of polledNode
-            List<Node> neighbours = currentNode.myNeighbours();
+            List<Node> neighbours = currentNode.myNeighbours(snake);
 
             for(int i=0;i<neighbours.size();i++){
 
@@ -94,7 +102,7 @@ public class MyBot implements Bot {
                     if(isInClosed){
                         listClosed.remove(neighbour);
                     }
-                    if(!isInOpen && shouldProcess(neighbour)){
+                    if(!isInOpen && shouldProcess(neighbour, mazeSize, snake)){
                         openQueue.add(neighbour);
                     }
                 }
@@ -125,8 +133,10 @@ public class MyBot implements Bot {
     /**
      * @return should we process this node
      */
-    public boolean shouldProcess(Node n, Snake snake, Coordinate mazeSize){
+    public boolean shouldProcess(Node n, Coordinate mazeSize, Snake snake){
         //if node is out of screen MAX
+        SnakesUIMain test = new SnakesUIMain();
+
         if(n.getX()>(mazeSize.x-1) ||
                 n.getY()>(mazeSize.y-1)) {
             return false;
