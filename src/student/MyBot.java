@@ -69,5 +69,9 @@ public class MyBot implements Bot {
         return neighbours;
     }
 
+    private double manhattenDistance(Coordinate polledNode, Coordinate neighbour) {
+        return Math.sqrt(Math.abs(polledNode.x - neighbour.x) + Math.abs(polledNode.y - neighbour.y));
+    }
+
 }
 
