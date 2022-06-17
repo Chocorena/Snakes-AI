@@ -1,6 +1,5 @@
 package student;
 
-import snakes.Coordinate;
 import snakes.Snake;
 
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ public class Node{
 
     /**
      * Get neighbours of current snake position
-     * @param snake get information about head and body, length of body
+     *
      * @return array of neighbour coordinates
      * @author Morena
      */
