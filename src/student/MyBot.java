@@ -2,17 +2,17 @@ package student;
 
 import snakes.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+
 
 public class MyBot implements Bot {
 
     private static final Direction[] DIRECTIONS = new Direction[]{Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
+    SnakeCanvas canvas;
 
     @Override
     public Direction chooseDirection(Snake snake, Snake opponent, Coordinate mazeSize, Coordinate apple) {
+
         Coordinate head = snake.getHead();
 
         Coordinate afterHeadNotFinal = null;
@@ -38,40 +38,45 @@ public class MyBot implements Bot {
         return notLosing[0];
     }
 
-    /**
-     * Get neighbours of current snake position
-     * @param snake get information about head and body, length of body
-     * @return array of neighbour coordinates
-     * @author Morena
-     */
-    public List<Coordinate> myNeighbours(Snake snake){
-
-        Coordinate up = new Coordinate(snake.getHead().x - snake.elements.size(), snake.getHead().y);
-        Coordinate down = new Coordinate(snake.getHead().x + snake.elements.size(), snake.getHead().y);
-        Coordinate left = new Coordinate(snake.getHead().x, snake.getHead().y - snake.elements.size());
-        Coordinate right = new Coordinate(snake.getHead().x, snake.getHead().y + snake.elements.size());
-
-        Coordinate northEast = new Coordinate(snake.getHead().x + snake.elements.size(), snake.getHead().y - snake.elements.size());
-        Coordinate northWest = new Coordinate(snake.getHead().x - snake.elements.size(), snake.getHead().y - snake.elements.size());
-        Coordinate southEast = new Coordinate(snake.getHead().x + snake.elements.size(), snake.getHead().y + snake.elements.size());
-        Coordinate southWest = new Coordinate(snake.getHead().x - snake.elements.size(), snake.getHead().y + snake.elements.size());
-
-        List<Coordinate> neighbours = new ArrayList<>();
-        neighbours.add(up);
-        neighbours.add(down);
-        neighbours.add(left);
-        neighbours.add(right);
-        neighbours.add(northWest);
-        neighbours.add(northEast);
-        neighbours.add(southEast);
-        neighbours.add(southWest);
-
-        return neighbours;
-    }
 
     private double manhattenDistance(Coordinate polledNode, Coordinate neighbour) {
         return Math.sqrt(Math.abs(polledNode.x - neighbour.x) + Math.abs(polledNode.y - neighbour.y));
     }
 
-}
+    /**
+     * add father of node to linkedlist
+     * @param node
+     * @return
+     */
+    public LinkedList<Node> makePath(Node node){
 
+        LinkedList<Node> path = new LinkedList<Node>();
+
+        while(node.getFather() !=null){
+            path.addFirst(node);
+            node = node.getFather();
+        }
+
+        return path;
+    }
+
+    /**
+     * @return should we process this node
+     */
+    public boolean shouldProcess(Node n, Snake snake, Coordinate mazeSize){
+        //if node is out of screen MAX
+        if(n.getX()>(mazeSize.x-1) ||
+                n.getY()>(mazeSize.y-1)) {
+            return false;
+        }
+        //if node is out of screen MIN
+        if(n.getX()<0 ||
+                n.getY()<0) {
+            return false;
+        }
+
+        boolean  shouldProceed=!snake.elements.contains(n);
+        return shouldProceed;
+
+    }
+}
