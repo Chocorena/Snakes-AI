@@ -2,55 +2,48 @@ package student;
 
 import snakes.*;
 
+
 import java.util.*;
 
 
 public class MyBot implements Bot {
 
-    private static final Direction[] DIRECTIONS = new Direction[]{Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
-    SnakeCanvas canvas;
-    public final FoodPath foodController = new FoodPath();
-
-
     @Override
     public Direction chooseDirection(Snake snake, Snake opponent, Coordinate mazeSize, Coordinate apple) {
 
-        Coordinate head = snake.getHead();
+        Node food = new Node(apple.x, apple.y);
+        Node snakeHead = new Node(snake.getHead().x, snake.getHead().y);
+        LinkedList<Node> list = aStarAlgorithm(snakeHead, food, mazeSize, snake);
 
-        Coordinate afterHeadNotFinal = null;
-        if (snake.body.size() >= 2) {
-            Iterator<Coordinate> it = snake.body.iterator();
-            it.next();
-            afterHeadNotFinal = it.next();
+            if(!list.isEmpty()){
+
+               Coordinate li = (Coordinate) list.getFirst();
+               Direction dir = getDirection(snake, li);
+               list.remove(0);
+               if(dir != null){
+                   return dir;
+               }else return Direction.DOWN;
+
+            } else return Direction.DOWN;
+
+    }
+
+
+
+    private Direction getDirection(Snake snake, Coordinate destination){
+        if(snake.getHead().x != destination.x){
+            if(snake.getHead().x <= destination.x){
+                return Direction.RIGHT;
+            } else {
+                return Direction.LEFT;
+            }
+        } else{
+            if(snake.getHead().y <= destination.y){
+                return Direction.UP;
+            } else{
+                return Direction.DOWN;
+            }
         }
-
-        final Coordinate afterHead = afterHeadNotFinal;
-
-        Direction[] validMoves = Arrays.stream(DIRECTIONS)
-                .filter(d -> !head.moveTo(d).equals(afterHead))
-                .sorted()
-                .toArray(Direction[]::new);
-
-        Direction[] notLosing = Arrays.stream(validMoves)
-                .filter(d -> head.moveTo(d).inBounds(mazeSize))
-                .filter(d -> !opponent.elements.contains(head.moveTo(d)))
-                .filter(d -> !snake.elements.contains(head.moveTo(d)))
-                .sorted()
-                .toArray(Direction[]::new);
-
-        if(foodController.getPathToCurrentFood()==null) {
-
-
-            Node n = (Node) apple;
-
-            LinkedList<Node> list = aStarAlgorithm((Node) snake.getHead(), (Node) apple, mazeSize, snake);
-            foodController.setPathToCurrentFood(list);
-
-        }
-
-
-
-        return notLosing[0];
     }
 
 
@@ -61,6 +54,7 @@ public class MyBot implements Bot {
     }
 
     private LinkedList<Node> aStarAlgorithm(Node start, Node foodDestination, Coordinate mazeSize, Snake snake){
+
         PriorityQueue<Node> openQueue = new PriorityQueue<Node>();
 
         LinkedList<Node> listClosed = new LinkedList<Node>();
