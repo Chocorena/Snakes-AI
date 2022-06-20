@@ -1,5 +1,6 @@
 package student;
 
+import snakes.Coordinate;
 import snakes.Snake;
 
 import java.util.ArrayList;
@@ -8,16 +9,18 @@ import java.util.List;
 /**
  * Implements nodes of a cell on the game boar
  */
-public class Node{
+public class Node extends Coordinate{
     public int x, y;
     private int G =0;
     private int H =0;
     private Node father =  null;
 
     public Node(int x, int y) {
+        super(x, y);
         this.x = x;
         this.y = y;
     }
+
 
     public int getX() {
         return x;
@@ -53,37 +56,28 @@ public class Node{
         this.father = father;
     }
 
+
     /**
      * Get neighbours of current snake position
      *
      * @return array of neighbour coordinates
      * @author Morena
      */
-    public List<Node> myNeighbours(Snake snake){
+    public List<Node> myNeighbours(Node currentNode){
 
-        Node up = new Node(snake.getHead().x - 1, snake.getHead().y);
-        Node down = new Node(snake.getHead().x + 1, snake.getHead().y);
-        Node left = new Node(snake.getHead().x, snake.getHead().y - 1);
-        Node right = new Node(snake.getHead().x, snake.getHead().y + 1);
-
-        Node northEast = new Node(snake.getHead().x + 1, snake.getHead().y - 1);
-        Node northWest = new Node(snake.getHead().x - 1, snake.getHead().y - 1);
-        Node southEast = new Node(snake.getHead().x + 1, snake.getHead().y + 1);
-        Node southWest = new Node(snake.getHead().x - 1, snake.getHead().y + 1);
+        Node up = new Node(currentNode.x, currentNode.y+1);
+        Node down = new Node(currentNode.x, currentNode.y-1);
+        Node left = new Node(currentNode.x-1, currentNode.y);
+        Node right = new Node(currentNode.x+1, currentNode.y);
 
         List<Node> neighbours = new ArrayList<>();
         neighbours.add(up);
         neighbours.add(down);
         neighbours.add(left);
         neighbours.add(right);
-        neighbours.add(northWest);
-        neighbours.add(northEast);
-        neighbours.add(southEast);
-        neighbours.add(southWest);
 
         return neighbours;
     }
-
     /**
      * Check whether objects(here nodes) are equal
      *
