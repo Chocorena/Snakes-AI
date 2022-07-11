@@ -16,27 +16,78 @@ public class MyBot implements Bot {
 
         Node food = new Node(apple.x, apple.y);
         Node snakeHead = new Node(snake.getHead().x, snake.getHead().y);
+        Node opponentHead = new Node(opponent.getHead().x, opponent.getHead().y);
 
-        LinkedList<Node> list = aStarAlgorithm(snakeHead, food, mazeSize, snake);
-
+        /*LinkedList<Node> list = aStarAlgorithm(snakeHead, food, mazeSize, snake, opponent);
 
         if(list != null){
             Coordinate li = list.getFirst();
-            Direction dir = getDirection(snake, li);
-            if(validDirection(snake, opponent, mazeSize, dir)){
-                return  dir;
-            } else randomDir(snake, opponent, mazeSize);
-        }
-        return randomDir(snake, opponent, mazeSize);
+            System.out.println(li);
+            Direction dir = getDirectionSnake(snake, li);
+            if(validDirection(snake, opponent, mazeSize, dir) ){
+                if(snake.body.size() <= opponent.body.size() && manhattanDistance(opponentHead, food) == 1){
+                    //System.out.println("snake body smaller and near food");
+                    randomDir(snake, opponent, mazeSize);
+                }else return dir;//{System.out.println("direction valid");
 
+                //return dir;}
+                //if(!getOpponentPos(opponent, apple).equals(snake.getHead().moveTo(dir))){
+                //}
+
+            } //else return randomDir(snake, opponent, mazeSize);//{System.out.println("direction not valid");
+                    //return randomDir(snake, opponent, mazeSize);}
+        }
+        //System.out.println("list is null");
+        System.out.println("list is null");
+        return randomDir(snake, opponent, mazeSize);*/
+        if(snake.body.size() <= opponent.body.size() && manhattanDistance(opponentHead, food) == 1){
+            return randomDir(snake, opponent, mazeSize);
+        }
+        return aStarAlgorithm(snakeHead, food, mazeSize, snake, opponent);
+    }
+
+    /*public Direction performAlgorithm(Snake snake, Snake opponent, Coordinate mazeSize, Coordinate apple){
+        Node food = new Node(apple.x, apple.y);
+        Node snakeHead = new Node(snake.getHead().x, snake.getHead().y);
+        Node opponentHead = new Node(opponent.getHead().x, opponent.getHead().y);
+
+        LinkedList<Node> list = aStarAlgorithm(snakeHead, food, mazeSize, snake);
+
+        if(list != null){
+            Coordinate li = list.getFirst();
+            Direction dir = getDirectionSnake(snake, li);
+            if(validDirection(snake, opponent, mazeSize, dir) ){
+                if(snake.body.size() <= opponent.body.size() && manhattanDistance(opponentHead, food) == 1){
+                    System.out.println("snake body smaller and near food");
+                    randomDir(snake, opponent, mazeSize);
+                }else {System.out.println("direction valid");
+                    return dir;}
+                //if(!getOpponentPos(opponent, apple).equals(snake.getHead().moveTo(dir))){
+                //}
+
+            } else {System.out.println("direction not valid");
+                return randomDir(snake, opponent, mazeSize);}
+        }else performAlgorithm(snake, opponent, mazeSize, apple);
+        return null;
+    }*/
+
+    public Coordinate getOpponentPos(Snake opponent, Coordinate apple){
+        Node opponentHead = new Node(opponent.getHead().x, opponent.getHead().y);
+
+        if(getDirectionSnake(opponent, apple) == Direction.DOWN){
+            return new Coordinate(opponentHead.x, opponentHead.y-1);
+        }else if(getDirectionSnake(opponent, apple) == Direction.UP){
+            return new Coordinate(opponentHead.x, opponentHead.y+1);
+        }else if(getDirectionSnake(opponent, apple) == Direction.RIGHT){
+            return new Coordinate(opponentHead.x+1, opponentHead.y);
+        }else return new Coordinate(opponentHead.x-1, opponentHead.y);
     }
 
     public boolean validDirection(Snake snake, Snake opponent, Coordinate mazeSize, Direction dir){
         Coordinate head = snake.getHead();
 
-        if(!opponent.elements.contains(head.moveTo((dir))) && !snake.elements.contains(head.moveTo(dir)) && head.moveTo(dir).inBounds(mazeSize)) {
-            return true;
-        } else return false;
+        return !opponent.elements.contains(head.moveTo((dir))) && !snake.elements.contains(head.moveTo(dir))
+                && head.moveTo(dir).inBounds(mazeSize);
 
     }
 
@@ -65,6 +116,7 @@ public class MyBot implements Bot {
                 .sorted()
                 .toArray(Direction[]::new);
 
+
         /* Just naïve greedy algorithm that tries not to die at each moment in time */
         Direction[] notLosing = Arrays.stream(validMoves)
 
@@ -79,7 +131,7 @@ public class MyBot implements Bot {
         /* ^^^ Cannot avoid losing here */
     }
 
-    private Direction getDirection(Snake snake, Coordinate destination) {
+    private Direction getDirectionSnake(Snake snake, Coordinate destination) {
         if (snake.getHead().x != destination.x) {
             if (snake.getHead().x <= destination.x) {
                 return Direction.RIGHT;
@@ -100,7 +152,7 @@ public class MyBot implements Bot {
         return ((Math.abs(currentNode.x - neighbour.x)) + (Math.abs(currentNode.y - neighbour.y)));
     }
 
-    private LinkedList<Node> aStarAlgorithm(Node start, Node foodDestination, Coordinate mazeSize, Snake snake) {
+    private Direction aStarAlgorithm(Node start, Node foodDestination, Coordinate mazeSize, Snake snake, Snake opponent) {
 
         PriorityQueue<Node> openQueue = new PriorityQueue<Node>();
 
@@ -124,9 +176,18 @@ public class MyBot implements Bot {
             //System.out.println("Current Node: " + currentNode);
             //if polledNode is destination then just make path and return
             if (currentNode.equals(foodDestination)) {
+
                 LinkedList<Node> path = makePath(currentNode);
+                System.out.println(path);
                 if(!path.isEmpty()){
-                    return path;
+                    //System.out.println(path);
+                    //System.out.println(foodDestination);
+
+                    Direction firstDir = getDirectionSnake(snake, path.getFirst());
+                    if(validDirection(snake, opponent, mazeSize, firstDir)){
+                        //System.out.println("direction valid");
+                        return firstDir;
+                    }
                 }
             }
 
@@ -142,10 +203,10 @@ public class MyBot implements Bot {
                 //berechnet distance zwischen polledNode and this Neighbornode
                 //add distance into polledNode G
 
-                int neighborDistanceFromStart = currentNode.getG() + 1;
+                int neighborDistanceFromStart = currentNode.getG() + manhattanDistance(currentNode, neighbour);;
                 //System.out.println("getG: " + currentNode.getG());
 
-                if (!isInOpen && !isInClosed) {
+                if (!isInOpen && !isInClosed || neighborDistanceFromStart < neighbour.getG()) {
 
                     //set the parameters of this neighborNode
                     neighbour.setFather(currentNode);
@@ -153,13 +214,9 @@ public class MyBot implements Bot {
                     neighbour.setH(manhattanDistance(neighbour, foodDestination));
                     //System.out.println("setH: " + manhattanDistance(neighbour,foodDestination));
 
-
-                    if (shouldProcess(neighbour, mazeSize, snake)) {
-
-
+                    if(shouldProcess(neighbour, mazeSize, snake)){
+                        //System.out.println("should process true");
                         openQueue.add(neighbour);
-
-                        //System.out.println("openqueue: " + openQueue);
                     }
                 }
             }
@@ -175,7 +232,8 @@ public class MyBot implements Bot {
             openQueue.remove(now);
             listClosed.add(currentNode);
         }
-        return null;
+        System.out.println("list is null");
+        return randomDir(snake, opponent, mazeSize);
     }
 
     /**
@@ -192,7 +250,6 @@ public class MyBot implements Bot {
             path.addFirst(node);
             node = node.getFather();
         }
-        //System.out.println("Path: "+ path);
         return path;
     }
 
@@ -200,8 +257,8 @@ public class MyBot implements Bot {
      * @return should we process this node
      */
     public boolean shouldProcess(Node n, Coordinate mazeSize, Snake snake) {
-        //if node is out of screen MAX
 
+        //if node is out of screen MAX
         if (n.getX() > (mazeSize.x - 1) ||
                 n.getY() > (mazeSize.y - 1)) {
             return false;
@@ -212,95 +269,6 @@ public class MyBot implements Bot {
             return false;
         }
         Coordinate neighbour = new Coordinate(n.x, n.y);
-        //System.out.println(!snake.elements.contains(neighbour));
         return !snake.elements.contains(neighbour);
-
     }
 }
-    /*public Direction aSearch(Snake snake, Node food){
-
-        ArrayList<Node> openList = new ArrayList<Node>();
-        ArrayList<Node> closeList = new ArrayList<Node>();
-        Stack<Node> stack = new Stack<Node>();//Snake to eat the path
-
-        Node snakeHead = new Node(snake.getHead().x, snake.getHead().y);
-        openList.add(snakeHead);// Place the start node in the open list;
-
-        snakeHead.setH(manhattanDistance(snakeHead,food));
-
-        while(!openList.isEmpty()){
-            Node now=null;
-            int max=-1;
-            for(Node n:openList){//We find the F value (the description farthest from the target), if the same we choose behind the list is the latest addition.
-                if(n.getF()>=max){
-                    max=n.getF();
-                    now=n;
-                }
-            }
-            // Remove the current node from the open list and add it to the closed list
-            openList.remove(now);
-            closeList.add(now);
-            //Neighbor in four directions
-            Node up = new Node(now.getX(), now.getY() - snake.elements.size());
-            Node right = new Node(now.getX() + snake.elements.size(), now.getY());
-            Node down = new Node(now.getX(), now.getY() + snake.elements.size());
-            Node left = new Node(now.getX() - snake.elements.size(), now.getY());
-            ArrayList<Node> temp = new ArrayList<Node>(4);
-            temp.add(up);
-            temp.add(right);
-            temp.add(down);
-            temp.add(left);
-            for (Node n : temp){
-                // If the neighboring node is not accessible or the neighboring node is already in the closed list, then no action is taken and the next node continues to be examined;
-                if (closeList.contains(n)
-                        || n.getX()>(snake.mazeSize.x-1) || n.getX() < 0
-                        || n.getY()>(snake.mazeSize.y-1) || n.getY() < 0)
-                    continue;
-
-                // If the neighbor is not in the open list, add the node to the open list,
-                //  and the adjacent node's parent node as the current node, while saving the adjacent node G and H value, F value calculation I wrote directly in the Node class
-                if(!openList.contains(n)){
-//					System.out.println("ok");
-                    n.setFather(now);
-                    n.setG(now.getG()+10);
-                    n.setH(manhattanDistance(n,food));
-                    openList.add(n);
-                    // When the destination node is added to the open list as the node to be checked, the path is found, and the loop is terminated and the direction is returned.
-                    if (n.equals(food)) {
-
-                        //Go forward from the target node, .... lying groove there is a pit, node can not use f, because f and find the same node coordinates but f did not record father
-                        Node node = openList.get(openList.size() - 1);
-                        while(node!=null&&!node.equals(snakeHead)){
-                            stack.push(node);
-                            node=node.getFather();
-                        }
-                        int x = stack.peek().getX();
-                        int y = stack.peek().getY();
-                        if (x > snakeHead.x && y == snakeHead.y) {
-                            return Direction.RIGHT;
-                        }
-                        if (x < snakeHead.x && y == snakeHead.y) {
-                            return Direction.LEFT;
-                        }
-                        if (x == snakeHead.x && y > snakeHead.y) {
-                            return Direction.UP;
-                        }
-                        if (x == snakeHead.x && y < snakeHead.y) {
-                            return Direction.DOWN;
-                        }
-                    }
-                }
-                // If the neighbor is in the open list,
-                // // judge whether the value of G that reaches the neighboring node via the current node is greater than or less than the value of G that is stored earlier than the current node (if the value of G is greater than or smaller than the value of G), set the parent node of the adjacent node as Current node, and reset the G and F values ​​of the adjacent node.
-                if (openList.contains(n)) {
-                    if (n.getG() > (now.getG() + 1)) {
-                        n.setFather(now);
-                        n.setG(now.getG() + 1);
-                    }
-                }
-            }
-        }
-        // When the open list is empty, indicating that there is no new node to add, and there is no end node in the tested node, the path can not be found. At this moment, the loop returns -1 too.
-        return Direction.UP;
-    }
-}*/
