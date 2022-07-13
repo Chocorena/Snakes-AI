@@ -19,7 +19,6 @@ public class MyBot implements Bot {
         Node opponentHead = new Node(opponent.getHead().x, opponent.getHead().y);
 
         /*LinkedList<Node> list = aStarAlgorithm(snakeHead, food, mazeSize, snake, opponent);
-
         if(list != null){
             Coordinate li = list.getFirst();
             System.out.println(li);
@@ -167,59 +166,47 @@ public class MyBot implements Bot {
 
         //offene Liste so lange laufen lassen bis sie leer ist
         while (!openQueue.isEmpty()) {
-
             //PriorityQueue gibt Knoten mit niedrigsten F
             // deshalb Knoten aus Queue entfernen
-
             Node currentNode = openQueue.remove();
+            //wenn currenNode gleich Apfel ist, dann rekonstruiere den Weg und gib ihn zurück
 
-            //System.out.println("Current Node: " + currentNode);
-            //if polledNode is destination then just make path and return
             if (currentNode.equals(foodDestination)) {
-
                 LinkedList<Node> path = makePath(currentNode);
-                System.out.println(path);
-                if(!path.isEmpty()){
-                    //System.out.println(path);
-                    //System.out.println(foodDestination);
 
+                if(!path.isEmpty()){
                     Direction firstDir = getDirectionSnake(snake, path.getFirst());
                     if(validDirection(snake, opponent, mazeSize, firstDir)){
-                        //System.out.println("direction valid");
                         return firstDir;
                     }
                 }
             }
-
-            //find all neighbors of polledNode
+            //finde alle nachbarn von currenNode
             List<Node> neighbours = currentNode.myNeighbours(currentNode);
-            //System.out.println("Neighbours:" + neighbours);
+
             for (int i = 0; i < neighbours.size(); i++) {
 
                 Node neighbour = neighbours.get(i);
                 boolean isInOpen = openQueue.contains(neighbour);
                 boolean isInClosed = listClosed.contains(neighbour);
 
-                //berechnet distance zwischen polledNode and this Neighbornode
-                //add distance into polledNode G
+                //berechnet distance zwischen currentNoe and this Neighbour
+                //addiere distanz in den nachbarNode G
+                int neighborDistanceFromStart = currentNode.getG() + manhattanDistance(currentNode, neighbour);
 
-                int neighborDistanceFromStart = currentNode.getG() + manhattanDistance(currentNode, neighbour);;
-                //System.out.println("getG: " + currentNode.getG());
-
-                if (!isInOpen && !isInClosed || neighborDistanceFromStart < neighbour.getG()) {
-
-                    //set the parameters of this neighborNode
+                if (!isInOpen && !isInClosed) {
+                    //setze parameter vom nachbarNode
                     neighbour.setFather(currentNode);
                     neighbour.setG(neighborDistanceFromStart);
                     neighbour.setH(manhattanDistance(neighbour, foodDestination));
-                    //System.out.println("setH: " + manhattanDistance(neighbour,foodDestination));
 
                     if(shouldProcess(neighbour, mazeSize, snake)){
-                        //System.out.println("should process true");
                         openQueue.add(neighbour);
                     }
                 }
             }
+
+            // (|| neighborDistanceFromStart < neighbour.getG())
             Node now=null;
             int max=-1;
             for(Node n:openQueue){//We find the F value (the description farthest from the target), if the same we choose behind the list is the latest addition.
@@ -228,11 +215,10 @@ public class MyBot implements Bot {
                     now=n;
                 }
             }
-            // Remove the current node from the open list and add it to the closed list
+            //Entferne currentNode von der  openlist und addiere ihn zur closed list
             openQueue.remove(now);
             listClosed.add(currentNode);
         }
-        System.out.println("list is null");
         return randomDir(snake, opponent, mazeSize);
     }
 
