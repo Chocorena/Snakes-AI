@@ -1,7 +1,6 @@
-package student;
+package AStarAlgo;
 
 import snakes.Coordinate;
-import snakes.Snake;
 
 import java.util.ArrayList;
 import java.util.List;

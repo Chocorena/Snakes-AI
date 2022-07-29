@@ -1,4 +1,4 @@
-package student;
+package AStarAlgo;
 
 import snakes.Bot;
 import snakes.Coordinate;
@@ -18,57 +18,13 @@ public class MyBot implements Bot {
         Node snakeHead = new Node(snake.getHead().x, snake.getHead().y);
         Node opponentHead = new Node(opponent.getHead().x, opponent.getHead().y);
 
-        /*LinkedList<Node> list = aStarAlgorithm(snakeHead, food, mazeSize, snake, opponent);
-        if(list != null){
-            Coordinate li = list.getFirst();
-            System.out.println(li);
-            Direction dir = getDirectionSnake(snake, li);
-            if(validDirection(snake, opponent, mazeSize, dir) ){
-                if(snake.body.size() <= opponent.body.size() && manhattanDistance(opponentHead, food) == 1){
-                    //System.out.println("snake body smaller and near food");
-                    randomDir(snake, opponent, mazeSize);
-                }else return dir;//{System.out.println("direction valid");
 
-                //return dir;}
-                //if(!getOpponentPos(opponent, apple).equals(snake.getHead().moveTo(dir))){
-                //}
-
-            } //else return randomDir(snake, opponent, mazeSize);//{System.out.println("direction not valid");
-                    //return randomDir(snake, opponent, mazeSize);}
-        }
-        //System.out.println("list is null");
-        System.out.println("list is null");
-        return randomDir(snake, opponent, mazeSize);*/
         if(snake.body.size() <= opponent.body.size() && manhattanDistance(opponentHead, food) == 1){
             return randomDir(snake, opponent, mazeSize);
         }
         return aStarAlgorithm(snakeHead, food, mazeSize, snake, opponent);
     }
 
-    /*public Direction performAlgorithm(Snake snake, Snake opponent, Coordinate mazeSize, Coordinate apple){
-        Node food = new Node(apple.x, apple.y);
-        Node snakeHead = new Node(snake.getHead().x, snake.getHead().y);
-        Node opponentHead = new Node(opponent.getHead().x, opponent.getHead().y);
-
-        LinkedList<Node> list = aStarAlgorithm(snakeHead, food, mazeSize, snake);
-
-        if(list != null){
-            Coordinate li = list.getFirst();
-            Direction dir = getDirectionSnake(snake, li);
-            if(validDirection(snake, opponent, mazeSize, dir) ){
-                if(snake.body.size() <= opponent.body.size() && manhattanDistance(opponentHead, food) == 1){
-                    System.out.println("snake body smaller and near food");
-                    randomDir(snake, opponent, mazeSize);
-                }else {System.out.println("direction valid");
-                    return dir;}
-                //if(!getOpponentPos(opponent, apple).equals(snake.getHead().moveTo(dir))){
-                //}
-
-            } else {System.out.println("direction not valid");
-                return randomDir(snake, opponent, mazeSize);}
-        }else performAlgorithm(snake, opponent, mazeSize, apple);
-        return null;
-    }*/
 
     public Coordinate getOpponentPos(Snake opponent, Coordinate apple){
         Node opponentHead = new Node(opponent.getHead().x, opponent.getHead().y);
@@ -164,12 +120,12 @@ public class MyBot implements Bot {
         start.setFather(null);
         openQueue.add(start);
 
-        //offene Liste so lange laufen lassen bis sie leer ist
+        //Run open list until it is empty
         while (!openQueue.isEmpty()) {
-            //PriorityQueue gibt Knoten mit niedrigsten F
-            // deshalb Knoten aus Queue entfernen
+            //PriorityQueue gives nodes with lowest F
+            //therefore remove nodes from queue
             Node currentNode = openQueue.remove();
-            //wenn currenNode gleich Apfel ist, dann rekonstruiere den Weg und gib ihn zurück
+            //if currentNode equals apple, then reconstruct the path and return it
 
             if (currentNode.equals(foodDestination)) {
                 LinkedList<Node> path = makePath(currentNode);
@@ -181,7 +137,7 @@ public class MyBot implements Bot {
                     }
                 }
             }
-            //finde alle nachbarn von currenNode
+            //find all neighbours of currenNode
             List<Node> neighbours = currentNode.myNeighbours(currentNode);
 
             for (int i = 0; i < neighbours.size(); i++) {
@@ -190,12 +146,12 @@ public class MyBot implements Bot {
                 boolean isInOpen = openQueue.contains(neighbour);
                 boolean isInClosed = listClosed.contains(neighbour);
 
-                //berechnet distance zwischen currentNoe and this Neighbour
-                //addiere distanz in den nachbarNode G
+                //calculates distance between currentNoe and this Neighbour
+                //Add distance to the neighbouring node G
                 int neighborDistanceFromStart = currentNode.getG() + manhattanDistance(currentNode, neighbour);
 
                 if (!isInOpen && !isInClosed) {
-                    //setze parameter vom nachbarNode
+                    //set parameter of neighbourNode
                     neighbour.setFather(currentNode);
                     neighbour.setG(neighborDistanceFromStart);
                     neighbour.setH(manhattanDistance(neighbour, foodDestination));
@@ -209,13 +165,14 @@ public class MyBot implements Bot {
             // (|| neighborDistanceFromStart < neighbour.getG())
             Node now=null;
             int max=-1;
-            for(Node n:openQueue){//We find the F value (the description farthest from the target), if the same we choose behind the list is the latest addition.
+            for(Node n:openQueue){//We find the F value (the description farthest from the target),
+                // if the same we choose behind the list is the latest addition.
                 if(n.getF()>=max){
                     max=n.getF();
                     now=n;
                 }
             }
-            //Entferne currentNode von der  openlist und addiere ihn zur closed list
+            //Remove currentNode from the openlist and add it to the closed list.
             openQueue.remove(now);
             listClosed.add(currentNode);
         }
