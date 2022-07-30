@@ -10,6 +10,12 @@
         </element>
       </root>
     </artifact>
+    <artifact type="jar" name="snakes:jar">
+      <output-path>$PROJECT_DIR$/out/artifacts/snakes_jar</output-path>
+      <root id="archive" name="snakes.jar">
+        <element id="module-output" name="snakes" />
+      </root>
+    </artifact>
   </component>
   <component name="InspectionProjectProfileManager">
     <profile version="1.0">
@@ -22,7 +28,7 @@
       <module fileurl="file://$PROJECT_DIR$/snakes.iml" filepath="$PROJECT_DIR$/snakes.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="17" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="openjdk-18" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="VcsDirectoryMappings">

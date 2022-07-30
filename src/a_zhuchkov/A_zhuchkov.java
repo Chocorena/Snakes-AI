@@ -19,6 +19,7 @@ public class A_zhuchkov implements Bot {
         Coordinate head = snake.getHead();
         Coordinate headOpponent = opponent.getHead();
 
+
         Coordinate afterHeadNotFinal = null;
         if (snake.body.size() >= 2) {
             Iterator<Coordinate> it = snake.body.iterator();

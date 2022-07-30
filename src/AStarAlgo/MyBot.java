@@ -8,9 +8,23 @@ import snakes.Snake;
 import java.util.*;
 
 
+/**
+ * The class MyBot implements the interface called Bot
+ * which includes functions that should be implemented
+ * to create smart snake bot for the game
+ */
 public class MyBot implements Bot {
     private static final Direction[] DIRECTIONS = new Direction[] {Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
 
+    /**
+     * Smart snake bot (brain of your snake) should choose step (direction where to go)
+     * on each game step until the end of game
+     * @param snake    Your snake's body with coordinates for each segment
+     * @param opponent Opponent snake's body with coordinates for each segment
+     * @param mazeSize Size of the board
+     * @param apple    Coordinate of an apple
+     * @return Direction the direction in which the snake will go next
+     */
     @Override
     public Direction chooseDirection(Snake snake, Snake opponent, Coordinate mazeSize, Coordinate apple) {
 
@@ -26,6 +40,13 @@ public class MyBot implements Bot {
     }
 
 
+    /**
+     * This method is unused, it will be helpful for future developement to improve our snakes
+     * ability to survive
+     * @param opponent Opponent snake's body with coordinates for each segment
+     * @param apple Coordinate of an apple
+     * @return Coordinate a coordinate with the position of the opponent
+     */
     public Coordinate getOpponentPos(Snake opponent, Coordinate apple){
         Node opponentHead = new Node(opponent.getHead().x, opponent.getHead().y);
 
@@ -38,6 +59,15 @@ public class MyBot implements Bot {
         }else return new Coordinate(opponentHead.x-1, opponentHead.y);
     }
 
+    /**
+     * Method to check if the next direction is in the mazeSize, the snake doesnt walk into its own body
+     * and doesnt walk into the opponent
+     * @param snake Your snake's body with coordinates for each segment
+     * @param opponent Opponent snake's body with coordinates for each segment
+     * @param mazeSize Size of the board
+     * @param dir the direction in which the snake should go next
+     * @return boolean true or false, depending on if the direction is valid or not
+     */
     public boolean validDirection(Snake snake, Snake opponent, Coordinate mazeSize, Direction dir){
         Coordinate head = snake.getHead();
 
@@ -48,8 +78,12 @@ public class MyBot implements Bot {
 
 
     /**
-     * Random production direction
-     * @return
+     * Method to get a random direction in which the snake won't die and hopefully won't lose
+     * It's more important to not lose though
+     * @param snake Your snake's body with coordinates for each segment
+     * @param opponent Opponent snake's body with coordinates for each segment
+     * @param mazeSize Size of the board
+     * @return Direction a direction in which the snake won't die
      */
     public Direction randomDir(Snake snake, Snake opponent, Coordinate mazeSize){
         Coordinate head = snake.getHead();
@@ -83,9 +117,15 @@ public class MyBot implements Bot {
 
         if (notLosing.length > 0) return notLosing[0];
         else return validMoves[0];
-        /* ^^^ Cannot avoid losing here */
+        /* Cannot avoid losing here */
     }
 
+    /**
+     * Method which calculates a direction based on the given snake and a destination coordinate
+     * @param snake Your snake's body with coordinates for each segment
+     * @param destination the destination coordinate
+     * @return Direction calculated direction based on 2 coordinates
+     */
     private Direction getDirectionSnake(Snake snake, Coordinate destination) {
         if (snake.getHead().x != destination.x) {
             if (snake.getHead().x <= destination.x) {
@@ -103,10 +143,25 @@ public class MyBot implements Bot {
     }
 
 
+    /**
+     * Method which calculates the distance between a starting and destination node
+     * @param currentNode the starting node
+     * @param neighbour the destination node
+     * @return int the distance between two nodes as an integer
+     */
     private int manhattanDistance(Node currentNode, Node neighbour) {
         return ((Math.abs(currentNode.x - neighbour.x)) + (Math.abs(currentNode.y - neighbour.y)));
     }
 
+    /**
+     * This method includes the implemented A* algorithm and returns the calculated direction the snake will go to next
+     * @param start start Node
+     * @param foodDestination Node of the current apple
+     * @param mazeSize Size of the board
+     * @param snake Your snake's body with coordinates for each segment
+     * @param opponent Opponent snake's body with coordinates for each segment
+     * @return Direction the Direction the snake will go next based on the algorithm
+     */
     private Direction aStarAlgorithm(Node start, Node foodDestination, Coordinate mazeSize, Snake snake, Snake opponent) {
 
         PriorityQueue<Node> openQueue = new PriorityQueue<Node>();
@@ -137,7 +192,7 @@ public class MyBot implements Bot {
                     }
                 }
             }
-            //find all neighbours of currenNode
+            //find all neighbours of currentNode
             List<Node> neighbours = currentNode.myNeighbours(currentNode);
 
             for (int i = 0; i < neighbours.size(); i++) {
@@ -162,28 +217,28 @@ public class MyBot implements Bot {
                 }
             }
 
-            // (|| neighborDistanceFromStart < neighbour.getG())
             Node now=null;
             int max=-1;
-            for(Node n:openQueue){//We find the F value (the description farthest from the target),
+            for(Node n:openQueue){
+                //We find the F value (the description farthest from the target),
                 // if the same we choose behind the list is the latest addition.
                 if(n.getF()>=max){
                     max=n.getF();
                     now=n;
                 }
             }
-            //Remove currentNode from the openlist and add it to the closed list.
+            //Remove currentNode from the openQueue and add it to the closedList.
             openQueue.remove(now);
             listClosed.add(currentNode);
         }
         return randomDir(snake, opponent, mazeSize);
     }
 
+
     /**
-     * add father of node to linkedlist
-     *
-     * @param node
-     * @return
+     * This methods recreates the shortest path starting from destination(food) node back to the starting node (current snake's head position)
+     * @param node food node (destination)
+     * @return LinkedList<Node> a list of nodes which represent all nodes of the shortest path to the apple
      */
     public LinkedList<Node> makePath(Node node) {
 
@@ -196,8 +251,13 @@ public class MyBot implements Bot {
         return path;
     }
 
+
     /**
-     * @return should we process this node
+     * Method to check if a node is in the mazeSize
+     * @param n the node that should be checke
+     * @param mazeSize Size of the board
+     * @param snake Your snake's body with coordinates for each segment
+     * @return boolean , true or false depending on if the node is inside the size of the board
      */
     public boolean shouldProcess(Node n, Coordinate mazeSize, Snake snake) {
 

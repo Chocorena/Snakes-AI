@@ -60,14 +60,14 @@ The sample bot is already set up in the project, simply compile and launch the g
 
 ### Create a package
 
-First, let's create a new package for you. Name it however you want, for the sake of this tutorial, we'll call it *student*.
+First, let's create a new package for you. Name it however you want, for the sake of this tutorial, we'll call it *AStarAlgo*.
 
 ### Create a class
 
 Our bot class must implement the Bot interface, otherwise, we won't be able to tell the game what it does.
 
 ```java
-package student
+package AStarAlgo
 
 public class MyBot implements Bot {
 
@@ -86,8 +86,9 @@ public Direction chooseDirection(Snake snake,
 In fact, this is the only method that we are required to implement in order to make our bot work, so let's make a simple bot, the only function of which would be not dying.
 
 So our code now looks like this:
+
 ```java
-package student
+package AStarAlgo
 
 public class MyBot implements Bot {
     @Override
@@ -121,12 +122,12 @@ private static final Direction[] DIRECTIONS = new Direction[] {Direction.UP, Dir
 And pick one random direction.
 
 ```java
-package student
+package AStarAlgo
 
 import java.util.Random;
 
 public class MyBot implements Bot {
-    private static final Direction[] DIRECTIONS = new Direction[] {Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
+    private static final Direction[] DIRECTIONS = new Direction[]{Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
 
     @Override
     public Direction chooseDirection(Snake snake, Snake opponent, Coordinate mazeSize, Coordinate apple) {
@@ -200,10 +201,10 @@ else return validMoves[0];
 So here is what we came up with, this is included with the repository, you find it as *johndoe.SampleBot*.
 
 ```java
-package student
+package AStarAlgo
 
 public class MyBot implements Bot {
-    private static final Direction[] DIRECTIONS = new Direction[] {Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
+    private static final Direction[] DIRECTIONS = new Direction[]{Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT};
 
     @Override
     /* choose the direction (stupidly) */
@@ -252,7 +253,7 @@ You must pass two bots, in order for the game to work, those could be the same.
 
 Let's use your newly written bot with the one, provided by us. Even though, they actually are the same.
 
-`java snakes.SnakesUIMain johndoe.SampleBot student.MyBot`
+`java snakes.SnakesUIMain johndoe.SampleBot AStarAlgo.MyBot`
 
 *Note: this command is executed in the folder with already compiled .class files, not in the src directory. **You do not need** to worry about this if you are using an IDE, such as IntelliJ Idea.*
 

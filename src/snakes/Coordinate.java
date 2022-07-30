@@ -16,6 +16,7 @@ public class Coordinate implements Comparable<Coordinate> {
     }
 
 
+
     /**
      * Add two coordinates of two points
      *
